@@ -3,7 +3,7 @@ this module contains GlideRose and Item class
 """
 # -*- coding: utf-8 -*-
 
-from constants import SULFURAS_HAND_OD_RAGNAROS, AGED_BRIE, BACKSTAGE_PASS
+from constants import SULFURAS_HAND_OD_RAGNAROS, AGED_BRIE, BACKSTAGE_PASS, CONJURED
 
 class GildedRose(object):
     """this contains all the functions required to manage the items and there quality
@@ -25,6 +25,9 @@ class GildedRose(object):
 
             elif item.name.startswith(BACKSTAGE_PASS):
                 self._update_backstage_pass(item)
+
+            elif item.name.lower.startswith(CONJURED):
+                self._update_conjured_item(item)
 
             else:
                 self._update_standard_item(item)
@@ -86,6 +89,16 @@ class GildedRose(object):
         if item.sell_in <=0:
             amount +=1
         self._dicrease_quality(item, amount)
+
+    def _update_conjured_item(self, item):
+        """ this can be used to update the quality for conjured items
+            this will updte quality by 2 units and if the sell_in date is 0 or fewer days
+            this will resuce the qulaity by 2 times
+        """
+        degrade = 2
+        if item.sell_in <= 0:
+            degrade *=2
+        self._dicrease_quality(item, degrade)
 
 
 class Item:
