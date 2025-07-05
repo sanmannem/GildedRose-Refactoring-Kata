@@ -18,7 +18,7 @@ class GildedRose(object):
         """
 
         for item in self.items:
-            if item == SULFURAS_HAND_OD_RAGNAROS:
+            if item.name == SULFURAS_HAND_OD_RAGNAROS:
                 continue
             if item.name == AGED_BRIE:
                 self._update_aged_brie(item)
@@ -78,7 +78,7 @@ class GildedRose(object):
         if item.sell_in <=5:
             amount +=1
         elif item.sell_in <= 10:
-            amount +=1
+            amount +=2
         self._increase_quality(item, amount=amount)
 
     def _update_standard_item(self, item, amount = 1):
