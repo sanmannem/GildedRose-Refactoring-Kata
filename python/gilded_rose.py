@@ -1,42 +1,97 @@
+"""
+this module contains GlideRose and Item class
+"""
 # -*- coding: utf-8 -*-
 
+from constants import SULFURAS_HAND_OD_RAGNAROS, AGED_BRIE, BACKSTAGE_PASS
+
 class GildedRose(object):
+    """this contains all the functions required to manage the items and there quality
+       this holds list of items
+    """
 
     def __init__(self, items):
         self.items = items
 
     def update_quality(self):
+        """ this will update the quality of different types of item
+        """
+
         for item in self.items:
-            if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
-                if item.quality > 0:
-                    if item.name != "Sulfuras, Hand of Ragnaros":
-                        item.quality = item.quality - 1
+            if item == SULFURAS_HAND_OD_RAGNAROS:
+                continue
+            if item.name == AGED_BRIE:
+                self._update_aged_brie(item)
+
+            elif item.name.startswith(BACKSTAGE_PASS):
+                self._update_backstage_pass(item)
+
             else:
-                if item.quality < 50:
-                    item.quality = item.quality + 1
-                    if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                        if item.sell_in < 11:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-                        if item.sell_in < 6:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-            if item.name != "Sulfuras, Hand of Ragnaros":
-                item.sell_in = item.sell_in - 1
-            if item.sell_in < 0:
-                if item.name != "Aged Brie":
-                    if item.name != "Backstage passes to a TAFKAL80ETC concert":
-                        if item.quality > 0:
-                            if item.name != "Sulfuras, Hand of Ragnaros":
-                                item.quality = item.quality - 1
-                    else:
-                        item.quality = item.quality - item.quality
-                else:
-                    if item.quality < 50:
-                        item.quality = item.quality + 1
+                self._update_standard_item(item)
+
+    def _dicrease_quality(self, item, amount = 1):
+        """should be used to dicrement the quality
+           dicrements the quantity default by 1 unit if amount not provided
+
+        Args:
+            item (item): item
+            amount (int, optional): this is the amount by which the quality should be dicremented.
+            Defaults to 1.
+        """
+        item.quality = max(item.quality - amount)
+
+    def _increase_quality(self, item, amount = 1):
+        """should be used to derecement the quality
+           increment the quantity default by 1 unit if amount not provided
+
+        Args:
+            item (item): item
+            amount (int, optional): this is the amount by which the quality should be incremented.\
+                                    Defaults to 1.
+        """
+        item.quality = min(50, item.quality + amount)
+
+    def _update_aged_brie(self, item):
+        """this is for updating for aged_bire items
+           this will increment the 
+        """
+        amount = 1
+        #since the aged_brie's quality increases as older it gets
+        #incrementing it if the sell_in is <=0
+        if item.sell_in <= 0:
+            amount +=1
+        self._increase_quality(item, amount=amount)
+
+    def _update_backstage_pass(self, item):
+        """this will update the quality for backstage_pass
+           a. quality drops to 0 if the pass expires
+           b. increase by 2 if 10 or fewer days left
+           c. increase by 3 if 5 or fewer days left
+        """
+        if item.sell_in <=0:
+            item.quality = 0
+            return
+        amount = 1
+        if item.sell_in <=5:
+            amount +=1
+        elif item.sell_in <= 10:
+            amount +=1
+        self._increase_quality(item, amount=amount)
+
+    def _update_standard_item(self, item, amount = 1):
+        """this can be used to dicrement the quality of a standard item
+           this dicrease the quality by 1 if any sell_in dates are remaining 
+           else, it will decremen ty 2 units
+        """
+        if item.sell_in <=0:
+            amount +=1
+        self._dicrease_quality(item, amount)
 
 
 class Item:
+    """ this represents an item, one can use this to create an item object
+    """
+
     def __init__(self, name, sell_in, quality):
         self.name = name
         self.sell_in = sell_in
