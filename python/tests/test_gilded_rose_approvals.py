@@ -2,7 +2,7 @@ import io
 import sys
 
 from approvaltests import verify
-from texttest_fixture import main
+from python.texttest_fixture import main
 
 def test_gilded_rose_approvals():
     orig_sysout = sys.stdout
