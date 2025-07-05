@@ -84,7 +84,7 @@ class GildedRose(object):
     def _update_standard_item(self, item, amount = 1):
         """this can be used to dicrement the quality of a standard item
            this dicrease the quality by 1 if any sell_in dates are remaining 
-           else, it will decremen ty 2 units
+           else, it will decrement by 2 units
         """
         if item.sell_in <=0:
             amount +=1
